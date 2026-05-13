@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+Icon
+._*
+
+# Backup files
+*.bak
+*.tmp
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
