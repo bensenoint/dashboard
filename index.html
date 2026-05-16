@@ -1,4 +1,17 @@
 <!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Benseno Tasarim Panosu",
+  "schemaVersion": 1,
+  "description": "Benseno birleşik dashboard — 3 departman (Tasarım/Editör/AI) operasyon + analitik. 17 sekme. Multi-assignee + roller + akış + blocker desteği.",
+  "mcpTools": [
+    "mcp__8d40c455-2f52-4946-b26f-009e54bc2168__slack_read_canvas"
+  ],
+  "mcpServerNames": [
+    "Slack"
+  ]
+}
+</script>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -462,6 +475,73 @@ a:hover { text-decoration: underline; }
 }
 .gallery-card .deadline-pill.overdue { background: #fce8e6; color: #c5221f; font-weight: 600; }
 .gallery-card .deadline-pill.today { background: #fef7e0; color: #b06000; font-weight: 600; }
+
+/* v7.12 — Tarihi Şüpheli Brief'ler için kart-seviye flag'ler */
+.gallery-card.deadline-past {
+  background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+  border-left: 4px solid #dc2626;
+  position: relative;
+}
+.gallery-card.deadline-past::before {
+  content: "⚠️ GEÇMİŞ TARİH";
+  position: absolute; top: -8px; left: 8px;
+  background: #dc2626; color: #fff;
+  font-size: 9px; font-weight: 700;
+  padding: 2px 6px; border-radius: 4px;
+  letter-spacing: 0.3px;
+}
+.gallery-card.deadline-past-confirmed {
+  background: #f9fafb;
+  border-left: 4px solid #9ca3af;
+  opacity: 0.85;
+}
+.gallery-card.deadline-past-confirmed::before {
+  content: "✓ TEYİT EDİLMİŞ GEÇ BRIEF";
+  position: absolute; top: -8px; left: 8px;
+  background: #6b7280; color: #fff;
+  font-size: 9px; font-weight: 700;
+  padding: 2px 6px; border-radius: 4px;
+}
+.gallery-card.flag-no-time {
+  border-top: 3px solid #f59e0b;
+}
+.gallery-card.flag-no-time::after {
+  content: "⏰ Saat eksik";
+  position: absolute; top: 4px; right: 4px;
+  background: #fef3c7; color: #92400e;
+  font-size: 9px; font-weight: 600;
+  padding: 1px 5px; border-radius: 3px;
+}
+.gallery-card.flag-after-hours {
+  border-bottom: 2px dashed #818cf8;
+}
+.gallery-card.flag-after-hours .deadline-pill::after {
+  content: " 🌙";
+}
+
+/* v7.13 — Marka Davranış Öğrenmesi tablo */
+.marka-stats-table {
+  width: 100%; border-collapse: collapse; font-size: 12px;
+}
+.marka-stats-table th {
+  background: #f8f9fa; padding: 10px 8px; text-align: left;
+  font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;
+  position: sticky; top: 0; white-space: nowrap;
+}
+.marka-stats-table td {
+  padding: 8px; border-bottom: 1px solid #f1f3f4;
+  vertical-align: middle;
+}
+.marka-stats-table tr:hover { background: #f9fafb; }
+.marka-stats-table .brand-name { font-weight: 600; color: #1f2937; }
+.marka-stats-table .metric-cell { text-align: right; font-variant-numeric: tabular-nums; }
+.marka-stats-table .conf-high { background: #d1fae5; color: #065f46; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+.marka-stats-table .conf-medium { background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+.marka-stats-table .conf-low { background: #fee2e2; color: #991b1b; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; }
+.marka-stats-table .delta-pos { color: #059669; font-weight: 600; }
+.marka-stats-table .delta-neg { color: #dc2626; font-weight: 600; }
+.marka-stats-table .sparkline { display: inline-block; vertical-align: middle; }
+#marka-stats-mode-pill.mode-active { background: #d1fae5 !important; color: #065f46 !important; }
 .avatar {
   width: 22px; height: 22px; border-radius: 50%;
   background: linear-gradient(135deg, #2962ff, #34a853);
@@ -763,76 +843,36 @@ tr:hover .rxn-hint, .rxn-hint:hover { opacity: 1; }
 </style>
 </head>
 <body>
-<style id="benseno-lock-style">
-  #benseno-lock{position:fixed;inset:0;background:#0F172A;color:white;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:system-ui,Segoe UI,sans-serif}
-  #benseno-lock-card{background:#1E293B;padding:48px;border-radius:12px;text-align:center;max-width:400px;box-shadow:0 10px 40px rgba(0,0,0,0.4)}
-  #benseno-lock h1{margin:0 0 8px;font-size:24px;color:white}
-  #benseno-lock p{color:#94A3B8;margin:0 0 24px;font-size:14px;line-height:1.5}
-  #benseno-lock input{width:100%;padding:12px;border-radius:6px;border:1px solid #334155;background:#0F172A;color:white;font-size:16px;margin-bottom:12px;box-sizing:border-box;outline:none}
-  #benseno-lock input:focus{border-color:#3B82F6}
-  #benseno-lock button{width:100%;padding:12px;border-radius:6px;border:0;background:#3B82F6;color:white;font-size:16px;cursor:pointer;font-weight:600;transition:background 0.15s}
-  #benseno-lock button:hover{background:#2563EB}
-  #benseno-lock-err{color:#EF4444;font-size:13px;min-height:18px;margin-top:8px}
-  body.benseno-locked > *:not(#benseno-lock){display:none!important}
-</style>
-<div id="benseno-lock">
-  <div id="benseno-lock-card">
-    <h1>🔒 Benseno Dashboard</h1>
-    <p>Bu dashboard şifre korumalıdır.<br>Şifreyi ekipten alın.</p>
-    <input id="benseno-pw" type="password" placeholder="Şifre" autofocus>
-    <button onclick="bensenoUnlock()">Giriş Yap</button>
-    <div id="benseno-lock-err"></div>
-  </div>
-</div>
-<script id="benseno-lock-script">
-document.body.classList.add('benseno-locked');
-const BENSENO_HASH = '90e47349701cb763bd59faafe906ad91a0b5d37565b79c13ee057ef66691c28f';
-async function bensenoUnlock(){
-  const pw = document.getElementById('benseno-pw').value;
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
-  const hex = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-  if(hex === BENSENO_HASH){
-    document.body.classList.remove('benseno-locked');
-    document.getElementById('benseno-lock').remove();
-    sessionStorage.setItem('benseno_auth', hex);
-  } else {
-    document.getElementById('benseno-lock-err').textContent = 'Yanlış şifre.';
-  }
-}
-document.getElementById('benseno-pw').addEventListener('keypress',e=>{if(e.key==='Enter')bensenoUnlock();});
-if(sessionStorage.getItem('benseno_auth') === BENSENO_HASH){
-  document.body.classList.remove('benseno-locked');
-  setTimeout(()=>{const el=document.getElementById('benseno-lock');if(el)el.remove();},0);
-}
-</script>
-
 
 <script>
-// === EMBEDDED_DATA — Brief Sync her run'da burayı güncelliyor (GitHub Contents API) ===
-window.EMBEDDED_DATA = {"canvas_markdown": "# Benseno Tasarım İş Takip Panosu
+// === EMBEDDED_DATA — Brief Sync her run'da burayı günceller (GitHub push öncesi sed/replace) ===
+// Cowork artifact'ta çalışırken bu blok yoksayılır (gerçek window.cowork bridge zaten tanımlı).
+// GitHub Pages'te ise window.cowork mock'u kurulur ve EMBEDDED_DATA.canvas_markdown okunur.
+window.EMBEDDED_DATA = {
+  canvas_markdown: `# Benseno Tasarım İş Takip Panosu
 
-> 💡 **3 departmanın merkezi iş takip noktası** · 16 kişi · v7.6 (30dk döngü · GitHub Pages · auth).
+> 💡 **3 departmanın merkezi iş takip noktası** · 16 kişi · v7.11 · 🆕 **Production launch: 18 Mayıs Pazartesi**.
 
 ## 📊 Canlı Dashboard Linkleri (her 30 dk · :15 ve :45)
 
-🔒 [Birleşik Dashboard](https://bensenoint.github.io/dashboard/) ← şifre korumalı, ekipten al 🏷️ [Marka Kitabı](https://benseno.slack.com/docs/T4Y3R6RAN/F0B2ANKBBFV) · 🎓 [Lessons Learned](https://benseno.slack.com/docs/T4Y3R6RAN/F0B2H49SXPC) · 📐 [Şablonlar](https://benseno.slack.com/docs/T4Y3R6RAN/F0B2F2REETG)
+🔒 [Birleşik Dashboard](https://bensenoint.github.io/dashboard/) ← şifre korumalı, ekipten al · 🏷️ [Marka Kitabı](https://benseno.slack.com/docs/T4Y3R6RAN/F0B2ANKBBFV) · 🎓 [Lessons Learned](https://benseno.slack.com/docs/T4Y3R6RAN/F0B2H49SXPC) · 📐 [Şablonlar](https://benseno.slack.com/docs/T4Y3R6RAN/F0B2F2REETG)
 
-🔄 Üretildi: 14 Mayıs 2026 12:57 (TR)
+🔄 Üretildi: 16 Mayıs 2026 10:25 (TR) · 🧹 **Test verisi temizlendi · Pazartesi 18 May 00:00'dan itibaren canlı**
 
 ## 🎨 Tasarımcı İş Yükü (7 kişi)
 
 |Tasarımcı|Aktif|Acil|Lead|Yoğunluk|
 |  ---  |  ---  |  ---  |  ---  |  ---  |
-|<@U0AN6DD79M0> Aylin Tozkoparan|1|1|1|🟢 Müsait|
-|<@U06J26R1XCJ> Aykut Arslan|11|11|2|🔴 Aşırı Yoğun ⚠️ MAX SINIR (acil)|
-|<@U09BFPBKQG7> Hasan Serdar Arda|11|10|10|🔴 Aşırı Yoğun|
-|<@U06J4L6AVHS> Beyza Tosun|0|0|0|🟢 Müsait|
-|<@U055EDESLSE> İpek Akdeniz 🎯|1|0|1|🟢 Müsait|
+|<@U0AN6DD79M0> Aylin Tozkoparan|0|0|0|🟢 Müsait|
+|<@U06J26R1XCJ> Aykut Arslan|0|0|0|🟢 Müsait|
+|<@U09BFPBKQG7> Hasan Serdar Arda|0|0|0|🟢 Müsait|
+|<@U0B3K2WE7SB> Pelin Özdemir ✨|0|0|0|🟢 Müsait (yeni — 15May katıldı)|
+|<@U055EDESLSE> İpek Akdeniz 🎯|0|0|0|🟢 Müsait|
 |<@U0AK8U7L57F> İrem Özkan|0|0|0|🟢 Müsait|
 |<@U08HLMHTGEL> Serhat|0|0|0|🟢 Müsait|
 
 
-**Eşikler:** 🟢 0-1 · 🟡 2-3 · 🟠 4-5 · 🔴 6+ · **🎯 = Lead** · v7.6: İpek çalışan+yönetici, kapasite hesabında dahil
+**Eşikler:** 🟢 0-1 · 🟡 2-3 · 🟠 4-5 · 🔴 6+ · **🎯 = Lead · ✨ = Yeni katılan**
 
 ## ✍️ Editör İş Yükü (8 kişi)
 
@@ -840,15 +880,15 @@ window.EMBEDDED_DATA = {"canvas_markdown": "# Benseno Tasarım İş Takip Panosu
 |  ---  |  ---  |  ---  |  ---  |  ---  |
 |<@U4XCE3532> Cansu Kazgan 👑|0|0|0|🟢 Müsait|
 |<@U02SZQDAFPF> erdem akoğlu 🏅|0|0|0|🟢 Müsait|
-|<@U09BZHR25NG> Eda Tireli|11|11|17|🔴 Aşırı Yoğun|
+|<@U09BZHR25NG> Eda Tireli|0|0|0|🟢 Müsait|
 |<@U07PV0RA9L2> Eda Ayral|0|0|0|🟢 Müsait|
-|<@U08NQJ27G5S> Melis|2|0|3|🟡 Normal|
+|<@U08NQJ27G5S> Melis|0|0|0|🟢 Müsait|
 |<@U05PP70GQTX> Aylin Canel|0|0|0|🟢 Müsait|
 |<@U063T8M5HL4> Buse Gürbüzer|0|0|0|🟢 Müsait|
 |<@U0AAC3YK20G> Simge Acar|0|0|0|🟢 Müsait|
 
 
-**👑 = Direktör · 🏅 = Lead** · v7.6: yönetici görevleri kapasite hesabında ayrı sayılır
+**👑 = Direktör (3 dept) · 🏅 = Editör Yöneticisi**
 
 ## 🤖 AI Teknolojileri İş Yükü (1 kişi)
 
@@ -857,98 +897,67 @@ window.EMBEDDED_DATA = {"canvas_markdown": "# Benseno Tasarım İş Takip Panosu
 |<@U0AP31SAA1W> Eren Mahzunlar 🤖|0|0|🟢 Müsait|
 
 
-## 📋 Aktif İşler (3 departman · 15 brief) · STALE eşiği: 🔴=1g · 🟠=3g · 🟡=7g · 🟢=14g
+## 📋 Aktif İşler (3 departman · 0 brief) · STALE eşiği: 🔴=1g · 🟠=3g · 🟡=7g · 🟢=14g
 
-||Öncelik|Dept|Marka|İş|Atananlar|Editör|Deadline|Saat|Durum|Rev|Geçmiş|Slack|
-|  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |
-|1|🔴 Acil|🎨 Tasarım|Egosport|[Banner] Test işi - banner tasarımı|<@U0AN6DD79M0>(lead)|<@U030C48PL23>|5 Mayıs|14:00|⏳ Sırada **STALE**|0|⏳2May00:37→🚨12gün14May12:57 [STALE:🔴=1g aşıldı]|[↗](https://benseno.slack.com/archives/C0ANY1ZMH2A/p1777671461262479)|
-|2|🟡 Normal|🎨 Tasarım|Bauhaus|[Print] deneme tasarım, 4 sayfa|<@U06J26R1XCJ>(lead)|<@U030C48PL23>|5 Mayıs|15:00|⏳ Sırada **STALE**|0|⏳2May00:28→🚨12gün14May12:57 [STALE:🟡=7g aşıldı]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1777670929216019)|
-|3|🟡 Normal|🎨 Tasarım|Bauhaus|[SosyalMedya] 19 Mayıs Post — Atatürk + Bandırma Gemisi (revize geldi)|<@U06J26R1XCJ>(lead) + <@U09BFPBKQG7>(C-informal)|<@U09BZHR25NG>|19 Mayıs|—|♻️ Revizyon|1|⏳11May14:57→🤝11May19:52→🎨11May~20:00→✅(reply)12May~11:05→👀(1)parent→♻️13May16:11(Eda yeni revize) [REV:1]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778500671548569)|
-|6|🟠 Yüksek|🎨 Tasarım|TTA|[SosyalMedya] Haziran SM içerik Planı|<@U09BFPBKQG7>(lead-solo)|<@U08NQJ27G5S>|18 Mayıs|17:30|⏳ Sırada|0|⏳12May15:02→🎨12May15:24(Arda kabul)→📍12May15:48→📅13May14:55(event eklendi)|[↗](https://benseno.slack.com/archives/C05J5PXBPGS/p1778587320216949)|
-|10|🔴 Acil|🎨 Tasarım|Bauhaus|[Video] Bahçe Kreatif Video — m2 müşteri rev3 (ürün adları + font + son sahne insanlar)|<@U09BFPBKQG7>(lead-devir) + <@U06J26R1XCJ>(C-handoff)|<@U09BZHR25NG>|14 Mayıs|10:00|♻️ **REV:3 Aktif (Arda 'oki' 11:59)**|3|⏳13May09:31→🤝13May09:44→🎨13May~13:18→🎬13May14:04(33.9MB)→✅(inf)13May14:09→♻️13May16:14(akasya mini-rev)→🎨14May08:04→🎬14May09:44(revize-1.mp4 34.4MB)→💚14May09:57(Eda inf onay)→📤14May10:01(onaya iletildi)→♻️14May10:13(müşteri: mobilya büyüt/mangal küçült)→🎬14May10:52(revize-2.mp4 34.0MB)→♻️14May11:57(Eda yeni müşteri: ürün adları güncel+ince font+son sahne insanlar)→🎨14May11:59(Arda 'oki') [REV:3] [CUSTOMER_FEEDBACK:14May11:57]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778653878929959)|
-|12|🔴 Acil|🎨 Tasarım|Bauhaus|[SosyalMedya] Bahçe Mobilyaları - 1|<@U09BFPBKQG7>(lead)|<@U09BZHR25NG>|14 Mayıs|09:00|👻 **HAYALET ŞÜPHE** (2h14dk sessiz · GHOST_NOTIFIED 12:26)|0|⏳13May14:33→📂13May14:34→💬14May09:01→🎬14May09:59(31.2MB)→💬14May10:06-10(Eda: fiyatlar ters)→🎬14May10:32(revize-1.mp4 fiyat fix)→📷14May10:43(Eda image)→💬14May11:0X(Eda 'düzelttim'·Arda 'teşekkürler') [LATE_DETECT:14May09:00] [GHOST_NOTIFIED:14May12:26]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778672031874629)|
-|13|🔴 Acil|🎨 Tasarım|Bauhaus|[Video] Ferahlık Banyoda Başlar (8+1 plan)|<@U09BFPBKQG7>(lead-paralel) + <@U06J26R1XCJ>(C-paralel)|<@U09BZHR25NG>|15 Mayıs|10:00|✅ **Müşteri Onayladı · Force-Close DM (12:56)**|0|⏳13May21:33→🎬14May09:24(Aykut 22.2MB)→👀(1)parent→💚14May09:32(Eda)→✅(1)parent→💚14May12:02(Eda 'onaylandı')→📨14May12:56(Eda'ya force-close DM) [CUSTOMER_APPROVED:14May12:02] [FORCE_CLOSE_SUGGEST_DM:14May12:56]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778697211186769)|
-|14|🔴 Acil|🎨 Tasarım|Bauhaus|[Video] Tatil Rotanız Hazır (8+1 plan)|<@U09BFPBKQG7>(lead-paralel) + <@U06J26R1XCJ>(C-paralel)|<@U09BZHR25NG>|15 Mayıs|14:00|👀 **Müşteri Review** (Eda 12:08 onaya iletti)|0|⏳13May21:34→🤝14May08:54(Aykut→Arda)→💬14May08:54(Arda 'okito')→🎬14May12:00(Arda a6.mp4 34.2MB)→💚14May12:02-05(Eda 'ellerine sağlık')→📤14May12:08(Eda 'onaya ilettim') [INFORMAL_APPROVED:14May12:05] [CUSTOMER_REVIEW:14May12:08]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778697283008129)|
-|15|🔴 Acil|🎨 Tasarım|Bauhaus|[Video] Yeni Dergimiz Çıktı (8+1 plan)|<@U09BFPBKQG7>(lead-paralel) + <@U06J26R1XCJ>(C-paralel)|<@U09BZHR25NG>|16 Mayıs|08:00|⏳ Sırada|0|⏳13May21:35 [REASSIGN_NEEDED]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778697346009549)|
-|16|🔴 Acil|🎨 Tasarım|Bauhaus|[Video] Yeni Dergi Yeni Fırsatlar! (8+1 plan)|<@U09BFPBKQG7>(lead-paralel) + <@U06J26R1XCJ>(C-paralel)|<@U09BZHR25NG>|16 Mayıs|10:00|⏳ Sırada|0|⏳13May21:36 [REASSIGN_NEEDED]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778697403276069)|
-|17|🔴 Acil|🎨 Tasarım|Bauhaus|[Video] Banyonuza Güçlü Yenilik (8+1 plan)|<@U09BFPBKQG7>(lead-paralel) + <@U06J26R1XCJ>(C-paralel)|<@U09BZHR25NG>|16 Mayıs|13:00|⏳ Sırada|0|⏳13May21:37 [REASSIGN_NEEDED]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778697465733949)|
-|18|🔴 Acil|🎨 Tasarım|Bauhaus|[Video] Yüksek İşler Sağlam Çözümler İster (8+1 plan)|<@U09BFPBKQG7>(lead-paralel) + <@U06J26R1XCJ>(C-paralel)|<@U09BZHR25NG>|16 Mayıs|16:00|⏳ Sırada|0|⏳13May21:38 [REASSIGN_NEEDED]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778697517080969)|
-|19|🔴 Acil|🎨 Tasarım|Bauhaus|[Video] Mangal Keyfi Şimdi Başlıyor! (8+1 plan)|<@U09BFPBKQG7>(lead-paralel) + <@U06J26R1XCJ>(C-paralel)|<@U09BZHR25NG>|17 Mayıs|09:00|⏳ Sırada|0|⏳13May21:39 [REASSIGN_NEEDED]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778697570353649)|
-|20|🔴 Acil|🎨 Tasarım|Bauhaus|[Video] Gölgeniz De Konforunuz Da Hazır! (8+1 plan)|<@U09BFPBKQG7>(lead-paralel) + <@U06J26R1XCJ>(C-paralel)|<@U09BZHR25NG>|17 Mayıs|13:00|⏳ Sırada|0|⏳13May21:40 [REASSIGN_NEEDED]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778697641166069)|
-|21|🟡 Normal|🎨 Tasarım|ACU-TR (JNJ)|[Katalog] OASYS 1-DAY Dijital Katalog — TR çeviri + tasarım (MİKON kaynak)|<@U055EDESLSE>(lead · text-kabul)|<@U08NQJ27G5S>|15 Mayıs|17:00|🎨 Aktif Çalışmada (text-kabul)|0|⏳13May20:36→🤖auto-assign14May08:55→💬14May09:25-27(Cansu scope)→💬14May09:28(İpek 'hallederim') [SCOPE_CLARIFIED:14May09:27] [TEXT_ACCEPT:14May09:28]|[↗](https://benseno.slack.com/archives/C4Y58FEUU/p1778693761446369)|
-|22|🔴 Acil|🎨 Tasarım|Bauhaus|[SosyalMedya Post] deneme (form widget · \"cok deneme\")|<@U06J26R1XCJ>(lead-manuel)|<@U09BZHR25NG>|14 Mayıs|12:30|⏳ Sırada ⚠️ **DEADLINE GEÇTİ 27dk · NO_REACTION:96dk · Eda'ya DM (12:56)**|0|⏳14May11:21(form widget) [TEST_BRIEF?] [MAX_ACIL_VIOLATION:Aykut 11/11] [DL_PASSED:14May12:30] [EDITOR_DM:14May12:56]|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778746890857589)|
-
+*Şu an aktif brief yok — Pazartesi 18 Mayıs 00:00 TR itibarıyla yeni brief'ler buraya düşecek.*
 
 ## ✅ Tamamlanan İşler (son 90 gün)
 
-||Dept|Marka|İş|Atanan|Deadline|Başlangıç|Bitiş|Süre|Rev|Gecikme|Link|
-|  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |  ---  |
-|8|🎨 Tasarım|Bauhaus|Weber Günleri Duyuru (Post + Story)|Aykut+Arda|13 May 17:00|13May13:33|13May~21:40|~8.1h|2|Müşteri revize (~4h40 geç)|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778667247378819)|
-|7|🎨 Tasarım|HASVET|Baskı Dosyaları — kaynak dosya teslimi|İpek+Aykut(C-inf)|14 May 12:00|13May16:01|13May17:02|~1.0h|0|— (force-close-melis)|[↗](https://benseno.slack.com/archives/C081GAK936J/p1778580199246129)|
-|6|🎨 Tasarım|Bauhaus|Kurban Bayramı Post (Aile sofrası)|Aykut+Arda|15 May 13:00|12May17:22|12May17:27|~0.1h|1|— (force-close-eda)|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778584275210329)|
-|5|🎨 Tasarım|Bauhaus|Soğutma SM Reels|Arda|13 May 12:00|13May09:15|13May11:14|~2.0h|0|— (force-close-eda)|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778652362128479)|
-|4|🎨 Tasarım|Bauhaus|DJ Talks / Duyuru Story|Aykut|12 May 17:15|12May16:32|12May16:47|~0.25h|0|— (parent ✅(1))|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778592144758049)|
-|3|🎨 Tasarım|Bauhaus|Kadın Atölyesi / Anneler Günü Video|Aykut+Arda|12 May 16:00|12May11:18|12May16:52|~5.6h|1|~52dk geç · **Revizyon**|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778572863679019)|
-|2|🎨 Tasarım|Bauhaus|Gökhan Ünver Video Çeviri (sub)|Aykut+Arda|11 May 14:00|11May08:42|12May13:53|~1.8h|0|Yoğunluk (~23.9h geç)|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1778478151781409)|
-|1|🎨 Tasarım|Bauhaus|Katalog tasarımı, 24 sayfa|Aykut|30 Nisan|30Nis11:08|30Nis14:28|3.3h|0|—|[↗](https://benseno.slack.com/archives/C4Y43AW2E/p1777536520862849)|
-
+*Test dönemi tamamlanan briefler temizlendi. Pazartesi'den itibaren gerçek üretim verileri burada birikecek.*
 
 ## 💬 Thread Özetleri
 
-### #10 · Bauhaus — Bahçe Kreatif Video (REV:3 Aktif · Arda 'oki' 11:59)
-📌 REV:2 (revize-2.mp4) 10:52 teslim → Eda 11:57-58 yeni müşteri revize (ürün adları + ince font + son sahne insanlar). Arda 11:59 \"oki\" → REV:3 aktif.
-🎯 Status: Arda REV:3 çalışıyor.
+*Henüz aktif brief yok — thread özetleri Pazartesi'den itibaren oluşmaya başlar.*
 
-### #12 · Bauhaus — Bahçe Mobilyaları-1 (👻 Hayalet · GHOST_NOTIFIED 12:26)
-📌 14 May 09:00 deadline geçti (3h57). Mini-rev fix tamam (Arda fiyat + Eda image). 2h14dk sessiz. Parent ✅ yok.
-🚨 Şablon 17 12:26 gönderildi. Spam-koruma → sonraki ~16:26.
-🎯 Status: Force-close kandidat.
+## 🎉 Production Launch — 18 Mayıs Pazartesi
 
-### #13 · Bauhaus — Ferahlık Banyoda Başlar (✅ Müşteri Onayladı)
-📌 Aykut 09:24 teslim → Eda 12:02 \"burası onaylandı ellerine sağlıkk\" (CUSTOMER_APPROVED).
-📨 12:56 Eda'ya force-close DM gönderildi.
-🎯 Status: Force-close bekleniyor.
+🆕 **Yeni dönem hazırlığı tamamlandı:**
 
-### #14 · Bauhaus — Tatil Rotanız Hazır (👀 Müşteri Review)
-📌 Arda 12:00 a6.mp4 (34.2MB) teslim → Eda 12:02-05 informal onay → 12:08 \"onaya ilettim\" (müşteri).
-🎯 Status: Müşteri review aşamasında.
-
-### #21 · ACU-TR / OASYS 1-DAY (İpek text-kabul)
-📌 Cansu scope (MİKON kaynak). İpek \"hallederim ben\" 09:28.
-🎯 Status: İpek aktif.
-
-### #3 · Bauhaus — 19 Mayıs Post (revize aktif)
-📌 Eda 13May16:11 yeni revize. REV:1 aktif. Aykut çalışıyor.
-
-### 🚨 BAUHAUS 8+1 Video Yeniden Dağıtım
-📌 #10 REV:3, #11 ✅, #12 hayalet, #13 müşteri onayladı, #14 müşteri review, #15-20 sıra. 2 video bugün teslim.
-🎯 Status: Yönetici onayı bekleniyor (Beyza/İrem/Serhat müsait).
-
-### #22 · Bauhaus — deneme (form widget · DL GEÇTİ)
-📌 11:21 brief, 12:30 deadline → 27dk geçti. Aykut NO_REACTION:96dk. TEST_BRIEF şüphesi.
-📨 12:56 Eda'ya DM → iptal veya devret.
+* ✅ Test brief'leri temizlendi (Aktif + Tamamlanan tabloları sıfırlandı)
+* ✅ Brief Sync v7.11 — Workflow form parser hazır
+* ✅ Slack Workflow \`📋 Yeni Brief Aç\` 39 marka kanalına bookmark ekli
+* ✅ Pelin Özdemir ekipte (Beyza Tosun yerine, 15 May katıldı)
+* ✅ 5 Yönetici hiyerarşisi: Görkem (GM) · Reyhan (GMY) · Cansu (Direktör) · İpek (Tasarım Yön.) · erdem (Editör Yön.)
+* ✅ Dashboard: bensenoint.github.io/dashboard/ (şifre: ekipten al)
+* ✅ Sabah Raporu 07:50 (hafta içi) · Brief Sync :15/:45 (mesai saatlerinde)
+* ✅ Disable edilmiş duplicate task'lar kapatıldı (saatlik özet + günaydın DM çakışması temizlendi)
 
 ## 📖 Kullanım Kılavuzu
 
 ### Brief Açma
-* 📋 → 🎨 Tasarım · ✍️ → ✍️ Editör · 🤖 → 🤖 AI
-* `📋 Banner, 🔴, 14:00, @Aylin`
-* **v7.6:** 🔴 acilde `@auto` kullanma → manuel @kişi
+
+* **Workflow ile (önerilen):** Marka kanal bookmark \`📋 Yeni Brief Aç\` → form doldur → otomatik canvas'a düşer
+* **Manuel brief:** \`📋 İş özeti\` (📋/✍️/🤖 dept prefix · marka kanal'dan otomatik)
+* Çoklu: \`@A @B\` paralel · \`@A > @B\` sıralı (seçim sırası)
+* 🔴 acilde \`@auto\` kullanma → manuel @kişi yaz
+* **Akıllı atama (P7-C1):** \`@auto\` veya @ boş → sistem önerisi, ✅ ile onayla (max 30 dk)
 
 ### Reaction & Komut
-🎨/✍️/🤖 başla · 👀 revize · ✅ onay · ⛔ engel · ♻️ yeniden aç · **🔒 force-close**
-**v7.6:** PARENT reaction · Tasarımcı kendi 🔒 · 🔒 sonrası 60sn sebep
+
+🎨/✍️/🤖 başla · 👀 revize · ✅ onay · ⛔ engel · ♻️ yeniden aç · **🔒 force-close** (lead/editör/yönetici/tasarımcı kendi adına) · Thread komutu: \`force-close\` veya \`🔒 close\` veya \`kapat\` · **Tüm atananlar ✅ verince tamamlanır.** ⭐+1-5 memnuniyet · 🎓 ders ekle
+
+**v7.11 hatırlatma:**
+
+* Reaction'lar PARENT mesaja (thread'e değil) — sistem otomatik düzeltir
+* 🔒 sonrası 60 sn içinde sebep yaz → Geçmiş'e kaydedilir
+* Workflow ile açılan brief'te marka kanal'dan otomatik türetilir
+* UTC saat varsa otomatik TR'ye çevrilir
 
 ### Sınırlar
-* Max 6 aktif · Max 2 acil/kişi
-* **STALE:** 🔴=1g · 🟠=3g · 🟡=7g · 🟢=14g
+
+* Max 6 aktif · Max 2 acil/kişi · 3+ fark uyarı
+* **STALE eşiği:** 🔴=1g · 🟠=3g · 🟡=7g · 🟢=14g
 
 ---
 
-> 🔄 **Son sync:** 14 Mayıs 2026 12:57 (12:45 slot · v7.6 · 0 yeni brief · #14 müşteri review · #10 REV:3 · #13 force-close DM · #22 DL geçti · #12 hayalet (spam) · 0 OOO · PAT 1g/90g OK · Auth wrapper devrede) · Sonraki: 13:15 · `LAST_SYNC_TS=1778752620 ARCHIVE_CANVAS_ID=null` **Sistem :15 ve :45'te güncellenir (30 dk).** Kanal: <#C02SZRJGY0M> 🔒 Dashboard: https://bensenoint.github.io/dashboard/ (şifre korumalı)
-", "generated_at": "2026-05-14T10:03:47Z", "sync_ts": 1778753027, "source": "github-pages"};
+> 🔄 **Son sync:** 16 Mayıs 2026 10:25 (manuel temizlik · production launch hazırlığı) · 🧹 **Tüm test brief'leri ve geçmiş veriler temizlendi** · Sonraki otomatik sync: Pazartesi 18 May 08:15 · \`LAST_SYNC_TS=1779051600 ARCHIVE_CANVAS_ID=null\` **Sistem :15 ve :45'te otomatik güncellenir (her 30 dk).** Kanal: <#C02SZRJGY0M> 🔒 Dashboard: https://bensenoint.github.io/dashboard/ (şifre korumalı)`,
+  generated_at: "2026-05-16T14:31:54.313580+03:00",
+  sync_ts: 1778931114,
+  source: "dashboard-push-once-1778931114"
+};
 
-// Cowork bridge mock — GitHub Pages'te window.cowork yok, EMBEDDED_DATA üzerinden veri sağla
+// Cowork bridge mock — GitHub Pages'te window.cowork yok, EMBEDDED_DATA üzerinden veri sağla.
+// Cowork sidebar'da bu blok atlanır (window.cowork zaten tanımlı).
 if (typeof window.cowork === 'undefined') {
   window.cowork = {
     callMcpTool: async function(toolName, args) {
@@ -1354,6 +1363,26 @@ if (typeof window.cowork === 'undefined') {
       <div class="card"><h3>↻ Marka Başına Revizyon</h3><div class="chart-wrapper"><canvas id="chart-brand-rev"></canvas></div></div>
     </div>
     <div class="card"><h3>🎨/✍️/🤖 Marka × Departman Matrisi</h3><div id="brand-dept-matrix" style="overflow-x:auto"></div></div>
+
+    <!-- v7.13 — E3 Marka Davranış Öğrenmesi -->
+    <div class="card">
+      <h3>📊 Marka Davranış Öğrenmesi (v7.13 — E3)
+        <span id="marka-stats-mode-pill" style="float:right;font-size:11px;padding:3px 8px;border-radius:6px;background:#fef3c7;color:#92400e;font-weight:600;">silent_log_only</span>
+      </h3>
+      <div id="marka-stats-info" style="font-size:12px;color:#6b7180;margin:-4px 0 12px 0;">
+        Her markanın geçmiş brief'lerinden hesaplanan ortalama deadline ve gerçek tamamlama süresi. Brief Sync bu tabloyu kullanarak yeni brief'lerde anormal süre sapmalarını yakalar.
+      </div>
+      <div id="marka-stats-table-container" style="overflow-x:auto;"></div>
+      <div id="marka-stats-empty" style="display:none;text-align:center;padding:30px;color:#6b7180;">
+        <div style="font-size:32px;margin-bottom:10px;">📈</div>
+        <div style="font-weight:600;margin-bottom:6px;">Henüz yeterli veri yok</div>
+        <div style="font-size:12px;line-height:1.5;">
+          Production launch 18 Mayıs Pazartesi.<br>
+          İlk 2 hafta veri toplama dönemi (silent mode).<br>
+          <b>1 Haziran Pazartesi</b> → aktif uyarılar başlar.
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- P5: 👥 EKİP MATRİSİ (3 dept) -->
@@ -2246,7 +2275,19 @@ function renderGallery(jobs, completed) {
     const initials = (j.assignee || '?').split(/\s+/).map(s => s[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
     const status = j._completed ? 'done' : j.status;
     const pri = j.priority || 'yellow';
-    return `<div class="gallery-card priority-${pri} ${j._completed?'completed':''}" data-job-id="${j.id}" data-job-type="${j._completed?'c':'a'}">
+    // v7.12 — Tarihi Şüpheli Brief flag detection (Süre hücresinden prefix yakala)
+    const dlText = (j.deadline || '').toString();
+    const flagConfirmed = /✓\s*Teyit/.test(dlText);
+    const flagPast = /⚠️\s*GEÇMİŞ/.test(dlText) || (dl && dl < new Date() && !j._completed && !flagConfirmed);
+    const flagSaatEksik = /⏰\s*Saat\s*eksik/.test(dlText);
+    const flagAfterHours = /🌙\s*Mesai\s*dışı/.test(dlText);
+    const flagClasses = [
+      flagPast && !flagConfirmed ? 'deadline-past' : '',
+      flagPast && flagConfirmed ? 'deadline-past-confirmed' : '',
+      flagSaatEksik ? 'flag-no-time' : '',
+      flagAfterHours ? 'flag-after-hours' : ''
+    ].filter(Boolean).join(' ');
+    return `<div class="gallery-card priority-${pri} ${j._completed?'completed':''} ${flagClasses}" data-job-id="${j.id}" data-job-type="${j._completed?'c':'a'}">
       <div class="card-header">
         <span class="priority-badge">${priorityLabel(pri).split(' ')[0]}</span>
         ${brandIcon(j.brand)}
@@ -3046,6 +3087,97 @@ function renderBrandReport(jobs, completed) {
     html += '</tbody></table>';
     matEl.innerHTML = brands.length ? html : '<div class="empty">Marka verisi yok</div>';
   }
+
+  // v7.13 — E3 Marka Davranış Öğrenmesi tablosu
+  renderMarkaStats();
+}
+
+// v7.13 — Marka Davranış İstatistikleri render
+function renderMarkaStats() {
+  const stats = (typeof MARKA_STATS !== 'undefined' && MARKA_STATS) ? MARKA_STATS : null;
+  const modePill = document.getElementById('marka-stats-mode-pill');
+  const tableContainer = document.getElementById('marka-stats-table-container');
+  const emptyState = document.getElementById('marka-stats-empty');
+
+  if (!stats || !stats.brands || Object.keys(stats.brands).length === 0) {
+    if (tableContainer) tableContainer.style.display = 'none';
+    if (emptyState) emptyState.style.display = 'block';
+    if (modePill) {
+      const mode = stats && stats.config ? stats.config.current_mode : 'silent_log_only';
+      modePill.textContent = mode;
+      modePill.className = (mode === 'active') ? 'mode-active' : '';
+    }
+    return;
+  }
+
+  if (emptyState) emptyState.style.display = 'none';
+  if (tableContainer) tableContainer.style.display = 'block';
+
+  // Mode pill
+  if (modePill) {
+    const mode = stats.config ? stats.config.current_mode : 'silent_log_only';
+    modePill.textContent = mode;
+    modePill.className = (mode === 'active') ? 'mode-active' : '';
+  }
+
+  // Brands sırala — high confidence önce, sonra n'e göre
+  const brandsArr = Object.entries(stats.brands)
+    .map(([name, data]) => ({ name, ...data }))
+    .sort((a, b) => {
+      if (a.confidence !== b.confidence) {
+        const order = { high: 0, medium: 1, low: 2 };
+        return (order[a.confidence] || 3) - (order[b.confidence] || 3);
+      }
+      return (b.n || 0) - (a.n || 0);
+    });
+
+  let html = '<table class="marka-stats-table"><thead><tr>';
+  html += '<th>Marka</th>';
+  html += '<th>n</th>';
+  html += '<th>Güven</th>';
+  html += '<th title="Brief açılışında verilen deadline süresinin medyanı">Medyan DL ± MAD</th>';
+  html += '<th title="Klasik ortalama ± standart sapma">Ort DL ± Std</th>';
+  html += '<th title="Brief başlangıcından ✅ ye kadar gerçek süre (medyan)">Gerçek Tamamlama</th>';
+  html += '<th title="Pozitif = brief\'ler erken bitiyor, negatif = sürekli gecikme">Δ (Medyan)</th>';
+  html += '<th title="Son 4 haftalık trend">Trend</th>';
+  html += '<th>Son Brief</th>';
+  html += '</tr></thead><tbody>';
+
+  brandsArr.forEach(b => {
+    const confClass = b.confidence === 'high' ? 'conf-high' : (b.confidence === 'medium' ? 'conf-medium' : 'conf-low');
+    const delta = b.deadline_vs_real_delta;
+    const deltaClass = (delta != null && delta > 0) ? 'delta-pos' : (delta != null && delta < 0 ? 'delta-neg' : '');
+    const deltaText = (delta != null) ? `${delta > 0 ? '+' : ''}${delta.toFixed(1)}g` : '—';
+    const trendStr = (b.trend_4w && b.trend_4w.length) ? renderSparkline(b.trend_4w) : '—';
+    html += `<tr>`;
+    html += `<td class="brand-name">${escapeHtml(b.name)}</td>`;
+    html += `<td class="metric-cell">${b.n || 0}</td>`;
+    html += `<td><span class="${confClass}">${(b.confidence || 'low').toUpperCase()}</span></td>`;
+    html += `<td class="metric-cell">${(b.median_deadline_days || 0).toFixed(1)}g <span style="color:#9ca3af">± ${(b.mad_deadline_days || 0).toFixed(1)}</span></td>`;
+    html += `<td class="metric-cell">${(b.mean_deadline_days || 0).toFixed(1)}g <span style="color:#9ca3af">± ${(b.std_deadline_days || 0).toFixed(1)}</span></td>`;
+    html += `<td class="metric-cell">${(b.median_complete_days || 0).toFixed(1)}g</td>`;
+    html += `<td class="metric-cell ${deltaClass}">${deltaText}</td>`;
+    html += `<td>${trendStr}</td>`;
+    html += `<td style="font-size:11px;color:#6b7180;">${escapeHtml(b.last_brief_date || '—')}</td>`;
+    html += `</tr>`;
+  });
+  html += '</tbody></table>';
+
+  if (tableContainer) tableContainer.innerHTML = html;
+}
+
+// Mini sparkline SVG renderer (son 4 hafta)
+function renderSparkline(values) {
+  if (!values || !values.length) return '—';
+  const w = 50, h = 16, pad = 1;
+  const min = Math.min(...values), max = Math.max(...values);
+  const range = max - min || 1;
+  const points = values.map((v, i) => {
+    const x = pad + (i / (values.length - 1 || 1)) * (w - 2 * pad);
+    const y = h - pad - ((v - min) / range) * (h - 2 * pad);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  return `<svg class="sparkline" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${points}" fill="none" stroke="#2962ff" stroke-width="1.5"/></svg>`;
 }
 
 // 👥 EKİP MATRİSİ — 3 departman
@@ -4034,9 +4166,27 @@ document.querySelectorAll('.tab').forEach(tab => {
 // ============================================================
 // MAIN
 // ============================================================
+// v7.13 — Marka Stats global (init'te yüklenir)
+let MARKA_STATS = null;
+async function loadMarkaStats() {
+  try {
+    // GitHub Pages'te marka_stats.json public — Cowork artifact'te ise window.cowork.callMcpTool fallback
+    const url = 'https://bensenoint.github.io/dashboard/marka_stats.json?_=' + Date.now();
+    const res = await fetch(url);
+    if (res.ok) {
+      MARKA_STATS = await res.json();
+      return;
+    }
+  } catch(e) { /* fallback */ }
+  // Fallback: bundled default (boş)
+  MARKA_STATS = { version: 'v7.13', config: { current_mode: 'silent_log_only' }, brands: {} };
+}
+
 async function init() {
   // P1.7 R-2: URL'den role oku (filter UI doldurulmadan önce)
   applyRoleFromURL_Pano();
+  // v7.13 — Marka stats yükle (paralel — Canvas'la birlikte)
+  loadMarkaStats(); // await etmiyoruz, brand panel render'da hazır olur
   const md = await loadCanvas();
   STATE.raw = md || '';
   if (!md) {
