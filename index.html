@@ -849,15 +849,13 @@ tr:hover .rxn-hint, .rxn-hint:hover { opacity: 1; }
 // Cowork artifact'ta çalışırken bu blok yoksayılır (gerçek window.cowork bridge zaten tanımlı).
 // GitHub Pages'te ise window.cowork mock'u kurulur ve EMBEDDED_DATA.canvas_markdown okunur.
 window.EMBEDDED_DATA = {
-  canvas_markdown: `# Benseno Tasarım İş Takip Panosu
-
-> 💡 **3 departmanın merkezi iş takip noktası** · 16 kişi · v7.13 · 🎉 **Production launch günü — 18 Mayıs Pazartesi**.
+  canvas_markdown: `> 💡 **3 departmanın merkezi iş takip noktası** · 16 kişi · v7.13 · 🎉 **Production launch günü — 18 Mayıs Pazartesi**.
 
 ## 📊 Canlı Dashboard Linkleri (her 30 dk · :15 ve :45)
 
 🔒 [Birleşik Dashboard](https://bensenoint.github.io/dashboard/) ← şifre korumalı, ekipten al · 🏷️ [Marka Kitabı](https://benseno.slack.com/docs/T4Y3R6RAN/F0B2ANKBBFV) · 🎓 [Lessons Learned](https://benseno.slack.com/docs/T4Y3R6RAN/F0B2H49SXPC) · 📐 [Şablonlar](https://benseno.slack.com/docs/T4Y3R6RAN/F0B2F2REETG)
 
-🔄 Üretildi: 18 Mayıs 2026 08:27 (TR) · 🚀 **Production launch ilk Brief Sync'i · henüz yeni brief yok**
+🔄 Üretildi: 18 Mayıs 2026 08:54 (TR) · 🟢 **Aktif brief yok · sync stabil · marka mode silent_log_only**
 
 ## 🎨 Tasarımcı İş Yükü (7 kişi)
 
@@ -871,7 +869,6 @@ window.EMBEDDED_DATA = {
 |<@U0AK8U7L57F> İrem Özkan|0|0|0|🟢 Müsait|
 |<@U08HLMHTGEL> Serhat|0|0|0|🟢 Müsait|
 
-**Eşikler:** 🟢 0-1 · 🟡 2-3 · 🟠 4-5 · 🔴 6+ · **🎯 = Lead · ✨ = Yeni katılan**
 
 ## ✍️ Editör İş Yükü (8 kişi)
 
@@ -886,7 +883,6 @@ window.EMBEDDED_DATA = {
 |<@U063T8M5HL4> Buse Gürbüzer|0|0|0|🟢 Müsait|
 |<@U0AAC3YK20G> Simge Acar|0|0|0|🟢 Müsait|
 
-**👑 = Direktör (3 dept) · 🏅 = Editör Yöneticisi**
 
 ## 🤖 AI Teknolojileri İş Yükü (1 kişi)
 
@@ -894,65 +890,25 @@ window.EMBEDDED_DATA = {
 |  ---  |  ---  |  ---  |  ---  |
 |<@U0AP31SAA1W> Eren Mahzunlar 🤖|0|0|🟢 Müsait|
 
+
 ## 📋 Aktif İşler (3 departman · 0 brief) · STALE eşiği: 🔴=1g · 🟠=3g · 🟡=7g · 🟢=14g
 
-*Şu an aktif brief yok — bugün Pazartesi 18 Mayıs production launch günü. İlk brief'ler workflow form'undan (marka kanal bookmark \`📋 Yeni Brief Aç\`) gelmeyi bekliyor.*
+*Şu an aktif brief yok — bugün Pazartesi 18 Mayıs production launch günü.*
 
 ## ✅ Tamamlanan İşler (son 90 gün)
 
-*Test dönemi tamamlanan briefler temizlendi. Bugünden itibaren gerçek üretim verileri burada birikecek.*
+*Bugünden itibaren gerçek üretim verileri burada birikecek.*
 
 ## 💬 Thread Özetleri
 
-*Henüz aktif brief yok — thread özetleri ilk brief'lerle birlikte oluşmaya başlar.*
-
-## 🚀 Production Launch — 18 Mayıs Pazartesi
-
-🎉 **Bugün canlı:**
-
-* ✅ Brief Sync v7.13 aktif — Workflow form parser + v7.12 otomatik öncelik + v7.13 marka davranış öğrenmesi
-* ✅ Marka istatistikleri: \`marka_stats.json\` mode=**silent_log_only** (1 Haziran'a kadar log-only, sonra otomatik active)
-* ✅ Slack Workflow \`📋 Yeni Brief Aç\` 39 marka kanalına bookmark ekli
-* ✅ Pelin Özdemir ekipte (Beyza Tosun yerine, 15 May katıldı)
-* ✅ 5 Yönetici hiyerarşisi: Görkem (GM) · Reyhan (GMY) · Cansu (Direktör) · İpek (Tasarım Yön.) · erdem (Editör Yön.)
-* ✅ Dashboard: bensenoint.github.io/dashboard/ (şifre: ekipten al)
-* ✅ Sabah Raporu 07:50 (hafta içi) · Brief Sync :15/:45 (mesai saatlerinde)
-
-## 📖 Kullanım Kılavuzu
-
-### Brief Açma
-
-* **Workflow ile (önerilen):** Marka kanal bookmark \`📋 Yeni Brief Aç\` → form doldur → otomatik canvas'a düşer
-* **Manuel brief:** \`📋 İş özeti\` (📋/✍️/🤖 dept prefix · marka kanal'dan otomatik)
-* Çoklu: \`@A @B\` paralel · \`@A > @B\` sıralı (seçim sırası)
-* 🔴 acilde \`@auto\` kullanma → manuel @kişi yaz
-* **Akıllı atama (P7-C1):** \`@auto\` veya @ boş → sistem öneri, ✅ ile onayla (max 30 dk)
-* **v7.12:** Öncelik form'da yok — deadline süresinden otomatik (≤8sa 🔴 · ≤24sa 🟠 · ≤72sa 🟡 · >72sa 🟢). Yönetici 🔴🟠🟡🟢 reaction ile manuel override yapabilir.
-
-### Reaction & Komut
-
-🎨/✍️/🤖 başla · 👀 revize · ✅ onay · ⛔ engel · ♻️ yeniden aç · **🔒 force-close** (lead/editör/yönetici/tasarımcı kendi adına) · Thread komutu: \`force-close\` veya \`🔒 close\` veya \`kapat\` · **Tüm atananlar ✅ verince tamamlanır.** ⭐+1-5 memnuniyet · 🎓 ders ekle
-
-**v7.13 hatırlatma:**
-
-* Reaction'lar PARENT mesaja (thread'e değil) — sistem otomatik düzeltir
-* 🔒 sonrası 60 sn içinde sebep yaz → Geçmiş'e kaydedilir
-* Workflow ile açılan brief'te marka kanal'dan otomatik türetilir
-* UTC saat varsa otomatik TR'ye çevrilir
-* **Marka davranış öğrenmesi (v7.13):** Şu an silent — DM uyarısı yok. 1 Haziran'dan itibaren aktif olur (yetersiz veri/anormal uzun süre uyarıları başlar).
-
-### Sınırlar
-
-* Max 6 aktif · Max 2 acil/kişi · 3+ fark uyarısı
-* **STALE eşiği:** 🔴=1g · 🟠=3g · 🟡=7g · 🟢=14g
+*Henüz aktif brief yok.*
 
 ---
 
-> 🔄 **Son sync:** 18 Mayıs 2026 08:27 (production launch ilk Brief Sync · 0 brief) · Sonraki otomatik sync: 18 May 08:45 · \`LAST_SYNC_TS=1779081960 ARCHIVE_CANVAS_ID=null\` · v7.13 marka mode: \`silent_log_only\` · **Sistem :15 ve :45'te otomatik güncellenir (her 30 dk).** Kanal: <#C02SZRJGY0M> 🔒 Dashboard: https://bensenoint.github.io/dashboard/ (şifre korumalı)
-`,
-  generated_at: "2026-05-18T08:29:46+03:00",
-  sync_ts: 1779082186,
-  source: "brief-sync-run-1779082186"
+> 🔄 **Son sync:** 18 Mayıs 2026 08:54 · \`LAST_SYNC_TS=1779083665\` · marka mode: \`silent_log_only\``,
+  generated_at: "2026-05-18T08:58:30+03:00",
+  sync_ts: 1779083910,
+  source: "brief-sync-run-1779083910"
 };
 
 // Cowork bridge mock — GitHub Pages'te window.cowork yok, EMBEDDED_DATA üzerinden veri sağla.
